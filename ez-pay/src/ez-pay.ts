@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, ethereum, Bytes, log } from "@graphprotocol/graph-ts"
 import {
   EzPay,
   ChangeRequested,
@@ -7,61 +7,54 @@ import {
   EMIPaid,
   Liquidated,
   LoanRequested,
-  LoanTransferred,
+  LoanTransferred as LoanTransferredEvent,
   RequestAccepted
 } from "../generated/EzPay/EzPay"
-import { ExampleEntity } from "../generated/schema"
+
+import {
+  Installment as InstallmentEntity,
+  EMIDetails,
+  Loan as LoanEntity,
+  UnclaimedToken as UnclaimedTokenEntity,
+  SemiApprovedRequest as SemiApprovedRequestEntity,
+} from '../generated/schema';
+
+export function handleLoanTransferred(event: LoanTransferredEvent): void {
+  let loanId = event.transaction.hash.toHex();
+  
+  // Create or update Installment entity
+  let installment = new InstallmentEntity(loanId);
+  installment.lender = event.params.lender;
+  installment.borrower = event.params.borrower;
+  // Add more fields as needed
+  
+  // Create or update Loan entity
+  let loan = new LoanEntity(loanId);
+  loan.amountPaid = createEMIDetailsEntity(loanId).id;
+  loan.completed = true; // Set based on your logic
+  
+  // Create or update UnclaimedToken entity
+  let unclaimedToken = new UnclaimedTokenEntity(loanId);
+  // Add more fields as needed
+  
+  // Create or update SemiApprovedRequest entity
+  let semiApprovedRequest = new SemiApprovedRequestEntity(loanId);
+  // Add more fields as needed
+  
+  // Save entities
+  installment.save();
+  loan.save();
+  unclaimedToken.save();
+  semiApprovedRequest.save();
+}
+
+function createEMIDetailsEntity(loanId: string): EMIDetails {
+  let emiDetails = new EMIDetails(loanId);
+  // Populate EMIDetails fields based on your logic
+  return emiDetails;
+}
 
 export function handleChangeRequested(event: ChangeRequested): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from)
-
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from)
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.lender = event.params.lender
-  entity.borrower = event.params.borrower
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.amountPaid(...)
-  // - contract.changes(...)
-  // - contract.finalApproval(...)
-  // - contract.installments(...)
-  // - contract.interestedUsers(...)
-  // - contract.loanGiven(...)
-  // - contract.loans(...)
-  // - contract.repliesToUsers(...)
-  // - contract.requests(...)
-  // - contract.unclaimedTokens(...)
-  // - contract.userLoans(...)
 }
 
 export function handleClaimTokens(event: ClaimTokens): void {}
@@ -73,7 +66,5 @@ export function handleEMIPaid(event: EMIPaid): void {}
 export function handleLiquidated(event: Liquidated): void {}
 
 export function handleLoanRequested(event: LoanRequested): void {}
-
-export function handleLoanTransferred(event: LoanTransferred): void {}
 
 export function handleRequestAccepted(event: RequestAccepted): void {}
