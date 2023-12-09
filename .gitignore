@@ -34,6 +34,6 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-ez-pay/node_modules
-ez-pay/generated
-ez-pay/build
+ez-pay2/node_modules
+ez-pay2/generated
+ez-pay2/build

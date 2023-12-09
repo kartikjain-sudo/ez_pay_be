@@ -6,9 +6,9 @@ dataSources:
     name: EzPay
     network: mumbai
     source:
-      address: "0xE56c3e812A80E31dF04a5FAc99208F9CBe32A6Bb"
+      address: "0x41f13e048F658f8dBbAe7eB7841630A9ec8AaD78"
       abi: EzPay
-      startBlock: 43363601
+      startBlock: 43368180
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

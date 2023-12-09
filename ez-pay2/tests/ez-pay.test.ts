@@ -5,10 +5,10 @@ import {
   clearStore,
   beforeAll,
   afterAll
-} from "matchstick-as/assembly/index"
+} from "matchstick-as"
 import { Address, Bytes, BigInt } from "@graphprotocol/graph-ts"
-import { ExampleEntity } from "../generated/schema"
-import { ChangeRequested } from "../generated/EzPay/EzPay"
+import { ChangeRequested } from "../generated/schema"
+import { ChangeRequested as ChangeRequestedEvent } from "../generated/EzPay/EzPay"
 import { handleChangeRequested } from "../src/ez-pay"
 import { createChangeRequestedEvent } from "./ez-pay-utils"
 
@@ -41,25 +41,25 @@ describe("Describe entity assertions", () => {
   // For more test scenarios, see:
   // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
 
-  test("ExampleEntity created and stored", () => {
-    assert.entityCount("ExampleEntity", 1)
+  test("ChangeRequested created and stored", () => {
+    assert.entityCount("ChangeRequested", 1)
 
     // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
     assert.fieldEquals(
-      "ExampleEntity",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
+      "ChangeRequested",
+      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "lender",
       "0x0000000000000000000000000000000000000001"
     )
     assert.fieldEquals(
-      "ExampleEntity",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
+      "ChangeRequested",
+      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "borrower",
       "0x0000000000000000000000000000000000000001"
     )
     assert.fieldEquals(
-      "ExampleEntity",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
+      "ChangeRequested",
+      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "notificationToLender",
       "boolean Not implemented"
     )

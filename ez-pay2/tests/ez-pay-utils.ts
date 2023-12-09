@@ -112,7 +112,7 @@ export function createLiquidatedEvent(
 }
 
 export function createLoanRequestedEvent(
-  paymentToken: Address,
+  requester: Address,
   borrower: boolean,
   id: Bytes
 ): LoanRequested {
@@ -121,10 +121,7 @@ export function createLoanRequestedEvent(
   loanRequestedEvent.parameters = new Array()
 
   loanRequestedEvent.parameters.push(
-    new ethereum.EventParam(
-      "paymentToken",
-      ethereum.Value.fromAddress(paymentToken)
-    )
+    new ethereum.EventParam("requester", ethereum.Value.fromAddress(requester))
   )
   loanRequestedEvent.parameters.push(
     new ethereum.EventParam("borrower", ethereum.Value.fromBoolean(borrower))
